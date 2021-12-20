@@ -50,6 +50,10 @@ jobs:
 
       - name: Scan Image
         run: |-
+          aws ecr wait image-scan-complete --repository-name ${{ env.ecr_name }} \
+            --image-id imageTag=$GITHUB_SHA \
+            --region ${{ env.region }}
+            
           aws ecr describe-image-scan-findings --repository-name ${{ env.ecr_name }} \
             --image-id imageTag=$GITHUB_SHA \
             --region ${{ env.region }}
