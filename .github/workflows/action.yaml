@@ -15,7 +15,7 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       aws_account_id: "499490329151"
       region: ap-east-1
-      project_name: demo-project-ecr-dev
+      ecr_name: demo-project-ecr-dev
 
     steps:
       - name: Check out app repository
@@ -43,13 +43,18 @@ jobs:
           docker login -u AWS -p $(aws ecr get-login-password --region ${{ env.region }}) ${{ env.aws_account_id }}.dkr.ecr.${{ env.region }}.amazonaws.com
 
           docker build -f ./Dockerfile \
-            --tag "${{ env.aws_account_id }}.dkr.ecr.${{ env.region }}.amazonaws.com/${{ env.project_name }}:$GITHUB_SHA" \
+            --tag "${{ env.aws_account_id }}.dkr.ecr.${{ env.region }}.amazonaws.com/${{ env.ecr_name }}:$GITHUB_SHA" \
             ./
 
-          docker push "${{ env.aws_account_id }}.dkr.ecr.${{ env.region }}.amazonaws.com/${{ env.project_name }}:$GITHUB_SHA"
+          docker push "${{ env.aws_account_id }}.dkr.ecr.${{ env.region }}.amazonaws.com/${{ env.ecr_name }}:$GITHUB_SHA"
         shell: bash
 
-
+      - name: Scan Image
+        run: |-
+          aws ecr describe-image-scan-findings --repository-name ${{ env.ecr_name }} \
+            --image-id imageTag=${{ env.aws_account_id }}.dkr.ecr.${{ env.region }}.amazonaws.com/${{ env.ecr_name }}:$GITHUB_SHA \
+            --region ${{ env.region }}
+        shell: bash
 
 
 
