@@ -13,6 +13,11 @@ jobs:
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      aws_account_id: "499490329151"
+      region: ap-east-1
+      project_name: demo-project-ecr-dev
+      ecr_repository_url: ${{ env.aws_account_id }}.dkr.ecr.${{ env.region }}.amazonaws.com/${{ env.project_name }}
+
     steps:
       - name: Check out app repository
         uses: actions/checkout@v2
@@ -31,6 +36,20 @@ jobs:
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v1
+
+      - name: Build Image
+        if: always()
+        run: |-
+          echo $GITHUB_SHA
+          aws ecr get-login-password --region region | docker login --username AWS --password-stdin ${{ env.aws_account_id }}.dkr.ecr.${{ env.region }}.amazonaws.com
+
+          docker build -f ./Dockerfile \
+            --tag "${{ env.ecr_repository_url }}:$GITHUB_SHA" \
+            ./
+
+          docker push "${{ env.ecr_repository_url }}:$GITHUB_SHA"
+        shell: bash
+
 
 
 
