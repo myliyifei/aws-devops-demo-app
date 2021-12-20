@@ -1,2 +1,2 @@
-FROM nginx:1.19.10
+FROM nginx:mainline
 COPY ./default.conf /etc/nginx/conf.d/
