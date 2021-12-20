@@ -33,11 +33,10 @@ jobs:
       - name: Autobuild
         uses: github/codeql-action/autobuild@v1
 
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v1
+      # - name: Perform CodeQL Analysis
+      #   uses: github/codeql-action/analyze@v1
 
       - name: Build Image
-        if: always()
         run: |-
           echo $GITHUB_SHA
           docker login -u AWS -p $(aws ecr get-login-password --region ${{ env.region }}) ${{ env.aws_account_id }}.dkr.ecr.${{ env.region }}.amazonaws.com
@@ -52,7 +51,7 @@ jobs:
       - name: Scan Image
         run: |-
           aws ecr describe-image-scan-findings --repository-name ${{ env.ecr_name }} \
-            --image-id imageTag=${{ env.aws_account_id }}.dkr.ecr.${{ env.region }}.amazonaws.com/${{ env.ecr_name }}:$GITHUB_SHA \
+            --image-id imageTag=$GITHUB_SHA \
             --region ${{ env.region }}
         shell: bash
 
