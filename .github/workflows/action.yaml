@@ -82,11 +82,11 @@ jobs:
           aws eks update-kubeconfig --name ${{ env.eks_name }} --region ${{ env.region }}
 
           helm package --app-version $GITHUB_SHA  ./helm
-          helm upgrade ${{ env.app_name }} ./app-service-1.0.0.tgz
-            --install --atomic --timeout 5m
-            --namespace default
-            --set image.repository="${{ env.aws_account_id }}.dkr.ecr.${{ env.region }}.amazonaws.com/${{ env.ecr_name }}"
-            --set image.tag="$GITHUB_SHA"
-            --set fullnameOverride="${{ env.app_name }}"
+          helm upgrade ${{ env.app_name }} ./app-service-1.0.0.tgz \
+            --install --atomic --timeout 5m \
+            --namespace default \
+            --set image.repository="${{ env.aws_account_id }}.dkr.ecr.${{ env.region }}.amazonaws.com/${{ env.ecr_name }}" \
+            --set image.tag="$GITHUB_SHA" \
+            --set fullnameOverride="${{ env.app_name }}" \
         shell: bash
 
