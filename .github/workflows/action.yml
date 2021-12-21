@@ -88,6 +88,6 @@ jobs:
             --set image.repository="${{ env.aws_account_id }}.dkr.ecr.${{ env.region }}.amazonaws.com/${{ env.ecr_name }}" \
             --set image.tag="$GITHUB_SHA" \
             --set fullnameOverride="${{ env.app_name }}" \
-          kubectl get svc ${{ env.app_name }} -o="custom-columns=NAME:.metadata.name,EXTERNAL-IP:.status.loadBalancer.ingress[0].hostname"
+          kubectl get svc ${{ env.app_name }} -o=custom-columns='NAME:.metadata.name,EXTERNAL-IP:.status.loadBalancer.ingress[0].hostname'
         shell: bash
 
