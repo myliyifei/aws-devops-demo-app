@@ -16,6 +16,8 @@ jobs:
       aws_account_id: "499490329151"
       region: ap-east-1
       ecr_name: demo-project-ecr-dev
+      eks_name: demo-project-eks-dev
+      app_name: helloworld
 
     steps:
       - name: Check out app repository
@@ -75,6 +77,16 @@ jobs:
 
         shell: bash
 
+      - name: Deploy App
+        run: |-
+          aws eks update-kubeconfig --name ${{ env.eks_name }} --region ${{ env.region }}
 
-
+          helm package --app-version $GITHUB_SHA  ./helm
+          helm upgrade ${{ env.app_name }} ./app-service-1.0.0.tgz
+            --install --atomic --timeout 5m
+            --namespace default
+            --set image.repository="${{ env.aws_account_id }}.dkr.ecr.${{ env.region }}.amazonaws.com/${{ env.ecr_name }}"
+            --set image.tag="$GITHUB_SHA"
+            --set fullnameOverride="${{ env.app_name }}"
+        shell: bash
 

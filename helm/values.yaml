@@ -22,17 +22,10 @@ containers:
   env: []
   ports:
     containerPort: 80
-  probePath: /login
+  probePath: /
 
 strategy:
   type: ""
-
-storageBucket:
-  enabled: false
-
-cloudSQLProxy:
-  enabled: false
-
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -60,10 +53,8 @@ service:
   port: 80
 
 ingress:
-  enabled: false
+  enabled: true
   annotations:
-    kubernetes.io/ingress.class: "gce"
-    kubernetes.io/ingress.global-static-ip-name: xxx-pip
   hosts:
     - paths:
       - path: /*
@@ -82,14 +73,14 @@ resources:
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   limits:
-    cpu: 1000m
-    memory: 2Gi
-  requests:
-    cpu: 200m
+    cpu: 100m
     memory: 500Mi
+  requests:
+    cpu: 20m
+    memory: 50Mi
 
 autoscaling:
-  enabled: true
+  enabled: false
   minReplicas: 2
   maxReplicas: 10
   targetCPUUtilizationPercentage: 80

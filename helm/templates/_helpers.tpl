@@ -56,39 +56,6 @@ Create the name of the service account to use
 {{- end }}
 {{- end }}
 
-{{/*
-Create the name of the google service account to use
-*/}}
-{{- define "app-service.googleServiceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- printf "gsa-%s@serai-traceability-%s.iam.gserviceaccount.com" (trimSuffix "-service" (include "app-service.fullname" .)) .Values.env }}
-{{- end }}
-{{- end }}
 
 
-{{/*
-Create the name of the google SHORT service account to login db
-*/}}
-{{- define "app-service.gsaDBName" -}}
-{{- if .Values.cloudSQLProxy.enabled }}
-{{- printf "gsa-%s@serai-traceability-%s.iam" (trimSuffix "-service" (include "app-service.fullname" .)) .Values.env }}
-{{- end }}
-{{- end }}
-
-
-{{/*
-Create the name of the db instance to use
-*/}}
-{{- define "app-service.dbInstanceName" -}}
-{{- if .Values.cloudSQLProxy.enabled }}
-{{- printf "serai-traceability-%s:asia-east2:serai-traceability-asea2-pgsql-%s-%s" .Values.env .Values.cloudSQLProxy.instance_no .Values.env }}
-{{- end }}
-{{- end }}
-
-{{/*
-Create the name of the gcs bucket to use
-*/}}
-{{- define "app-service.bucketName" -}}
-{{- printf "serai-traceability-bucket-1-asia-east2-%s" .Values.env }}
-{{- end }}
 
